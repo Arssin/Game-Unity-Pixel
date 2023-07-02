@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Rigidbody2D rb;
 
-    Vector2 movement;
+    private Vector2 movement;
 
 
     void Update()
