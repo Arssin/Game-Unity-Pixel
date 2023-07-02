@@ -1,36 +1,41 @@
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public Rigidbody2D rb;
-    private Animator animator;
+
+    [SerializeField] private float movementSpeed = 5.0f;
+    bool flipped;
     private Vector2 movement;
+    private Animator anim;
 
-
-    private void Update()
+    void Start()
     {
+        anim = GetComponent<Animator>();
+    }
 
-        movement.x = Input.GetAxis("Horizontal");
-        movement.y = Input.GetAxis("Vertical");
-    
+    void Update()
+    {
+        movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        anim.SetFloat("Speed", Mathf.Abs(movement.magnitude * movementSpeed));
+
+        if (movement.x < 0)
+        {
+            flipped = true;
+        }
+        else if (movement.x > 0)
+        {
+            flipped = false;
+        }
+        this.transform.rotation = Quaternion.Euler(new Vector3(0f, flipped ? 180f : 0f, 0f));
     }
 
     private void FixedUpdate()
     {
-        // Obracanie postaci w lewo lub prawo
-        if (movement.x < 0)
+        if (movement != Vector2.zero)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            var movementDelta = movement * movementSpeed * Time.deltaTime;
+            this.transform.Translate(movementDelta, Space.World);
         }
-        else if (movement.x > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-
-        // Wykonanie ruchu
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
-
     }
+
 }
