@@ -3,29 +3,18 @@ using UnityEngine.PlayerLoop;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
-    private Rigidbody2D rb;
+    public float moveSpeed = 5f;
+    public Rigidbody2D rb;
     private Animator animator;
     private Vector2 movement;
 
-    void Start()
+
+    private void Update()
     {
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-    }
 
-    void Update()
-    {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        // Ustalenie wektora kierunku na podstawie wprowadzanych danych
-        movement = new Vector2(moveHorizontal, moveVertical).normalized;
-
-        // Ustalenie animacji zale¿nej od wektora kierunku
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
+        movement.x = Input.GetAxis("Horizontal");
+        movement.y = Input.GetAxis("Vertical");
+    
     }
 
     private void FixedUpdate()
@@ -41,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Wykonanie ruchu
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
 
     }
 }
